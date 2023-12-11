@@ -3,10 +3,10 @@ import shutil
 from cereal.protobufable import ProtobufAble
 
 
-def test_roundtrip_1():
+def test_roundtrip():
 
     # define the class
-    class Roundtrip1(ProtobufAble):
+    class Roundtrip(ProtobufAble):
 
         def __init__(self, a: str, b: float, c: int, d: list[str], e: set[int]):
             self.a = a
@@ -16,11 +16,12 @@ def test_roundtrip_1():
             self.e = e
 
     # clear any existing serialization files
-    if Roundtrip1._get_protobuf_dir_path().exists():
-        shutil.rmtree(Roundtrip1._get_protobuf_dir_path())
+    protobuf_dir_path = Roundtrip._get_protobuf_dir_path()
+    if protobuf_dir_path.exists():
+        shutil.rmtree(protobuf_dir_path)
 
     # create an instance
-    instance_a = Roundtrip1(
+    instance_a = Roundtrip(
         a='hello',
         b=5.5,
         c=-6,
@@ -29,7 +30,7 @@ def test_roundtrip_1():
     )
 
     # round trip through the serialization process
-    instance_b = Roundtrip1.from_protobuf(protobuf=instance_a.to_protobuf())
+    instance_b = Roundtrip.from_protobuf(protobuf=instance_a.to_protobuf())
 
     try:
         # check for equality
@@ -38,5 +39,5 @@ def test_roundtrip_1():
     finally:
 
         # cleanup
-        if Roundtrip1._get_protobuf_dir_path().exists():
-            shutil.rmtree(Roundtrip1._get_protobuf_dir_path())
+        if protobuf_dir_path.exists():
+            shutil.rmtree(protobuf_dir_path)
