@@ -7,15 +7,16 @@ from types import GenericAlias
 from typing import Optional
 
 
-class ProtoBufAble(ABC):
+class ProtobufAble(ABC):
     """Base class that provides protobuf serialization."""
 
     _PROTOBUF_DIRNAME = '__protobuf__'
     _PROTOFILE_SUFFIX = '.proto'
     _OPTIONAL_TYPE_BY_TYPE = {str: 'string', bool: 'bool', int: 'int32', float: 'double'}
-    _REPEATED_TYPE_SET = frozenset((list, tuple, set))
+    _REPEATED_TYPE_SET = frozenset((list, set))
     _OPTIONAL_TYPE_BY_MEMBER: Optional[dict] = None
-    _REPEATED_TYPE_BY_MEMBER: Optional[dict] = None
+    _REPEATED_CONTAINER_TYPE_BY_MEMBER: Optional[dict] = None
+    _REPEATED_ELEMENT_TYPE_BY_MEMBER: Optional[dict] = None
     _MESSAGE_CLASS: Optional = None
 
     @classmethod
@@ -25,18 +26,23 @@ class ProtoBufAble(ABC):
 
     @classmethod
     def _get_protofile_path(cls) -> Path:
-        """Get the proto file path for this class."""
+        """Get the protofile path for this class."""
         return cls._get_protobuf_dir_path().joinpath(cls.__name__).with_suffix('.proto')
 
     @classmethod
     def _get_message_class_file_path(cls) -> Path:
-        """Get the proto file path for this class."""
+        """Get the protofile path for this class."""
         return cls._get_protobuf_dir_path().joinpath(f'{cls.__name__}_pb2.py')
 
     @classmethod
     def _ensure_type_by_member_dicts(cls) -> None:
+        """Ensure that the type by member dicts are set for this ProtobufAble class."""
 
-        if cls._OPTIONAL_TYPE_BY_MEMBER is None or cls._REPEATED_TYPE_BY_MEMBER is None:
+        if (
+                cls._OPTIONAL_TYPE_BY_MEMBER is None
+                or cls._REPEATED_CONTAINER_TYPE_BY_MEMBER is None
+                or cls._REPEATED_ELEMENT_TYPE_BY_MEMBER is None
+        ):
 
             type_by_member = {
                 name: parameter.annotation
@@ -49,14 +55,28 @@ class ProtoBufAble(ABC):
                 if member_type in cls._OPTIONAL_TYPE_BY_TYPE
             }
 
-            cls._REPEATED_TYPE_BY_MEMBER = {
+            repeated_type_by_member = {
                 name: member_type for name, member_type in type_by_member.items()
                 if name not in cls._OPTIONAL_TYPE_BY_MEMBER
             }
 
+            cls._REPEATED_CONTAINER_TYPE_BY_MEMBER = {}
+            cls._REPEATED_ELEMENT_TYPE_BY_MEMBER = {}
+            for member, repeated_type in repeated_type_by_member.items():
+                assert isinstance(repeated_type, GenericAlias), f'unexpected repeated type, {member} {repeated_type}'
+
+                container_type = getattr(repeated_type, '__origin__')
+                element_type = next(iter(getattr(repeated_type, '__args__')))
+
+                assert container_type in cls._REPEATED_TYPE_SET, f'unaccepted container type, {member} {container_type}'
+                assert element_type in cls._OPTIONAL_TYPE_BY_TYPE, f'unaccepted type, {member} {element_type}'
+
+                cls._REPEATED_CONTAINER_TYPE_BY_MEMBER[member] = container_type
+                cls._REPEATED_ELEMENT_TYPE_BY_MEMBER[member] = element_type
+
     @classmethod
     def _write_protofile(cls) -> None:
-        """Write a proto file for this class."""
+        """Write a protofile for this ProtobufAble."""
 
         # make the protobuf dir if necessary
         cls._get_protobuf_dir_path().mkdir(exist_ok=True)
@@ -77,13 +97,8 @@ class ProtoBufAble(ABC):
 
             # write declarations for each repeated type
             element_count = 0
-            for member, repeated_type in cls._REPEATED_TYPE_BY_MEMBER.items():
+            for member, element_type in cls._REPEATED_ELEMENT_TYPE_BY_MEMBER.items():
                 element_count += 1
-                assert isinstance(repeated_type, GenericAlias), f'unexpected repeated type, {member} {repeated_type}'
-                container_type = getattr(repeated_type, '__origin__')
-                element_type = next(iter(getattr(repeated_type, '__args__')))
-                assert container_type in cls._REPEATED_TYPE_SET, f'unaccepted container type, {member} {container_type}'
-                assert element_type in cls._OPTIONAL_TYPE_BY_TYPE, f'unaccepted type, {member} {element_type}'
                 print(
                     f'\trepeated {cls._OPTIONAL_TYPE_BY_TYPE[element_type]} {member} = {element_count};',
                     file=outf
@@ -103,6 +118,7 @@ class ProtoBufAble(ABC):
 
     @classmethod
     def _compile(cls) -> None:
+        """Compile the protofile for this ProtobufAble."""
 
         # get the protofile
         protofile_path = cls._get_protofile_path()
@@ -123,6 +139,7 @@ class ProtoBufAble(ABC):
 
     @classmethod
     def _import_message_class(cls) -> None:
+        """Import the message class for this ProtobufAble."""
 
         if cls._MESSAGE_CLASS is None:
 
@@ -139,6 +156,14 @@ class ProtoBufAble(ABC):
             cls._MESSAGE_CLASS = getattr(message_module, cls.__name__)
 
     def to_protobuf(self) -> bytes:
+        """Serialize the instance to protobuf bytes.
+
+        Returns
+        -------
+        bytes
+            protobuf serialized bytes of the instance.
+
+        """
 
         # import the message class if necessary
         if self._MESSAGE_CLASS is None:
@@ -155,7 +180,7 @@ class ProtoBufAble(ABC):
             setattr(instance, member, getattr(self, member))
 
         # add each repeated member
-        for member in self._REPEATED_TYPE_BY_MEMBER:
+        for member in self._REPEATED_ELEMENT_TYPE_BY_MEMBER:
             getattr(instance, member).extend(getattr(self, member))
 
         # serialize and return
@@ -163,6 +188,18 @@ class ProtoBufAble(ABC):
 
     @classmethod
     def from_protobuf(cls, protobuf: bytes):
+        """Create an instance from protobuf bytes.
+
+        Parameters
+        ----------
+        protobuf : bytes
+            protobuf serialized bytes of the class.
+
+        Returns
+        -------
+        __class__
+            an instance of the class
+        """
 
         # import the message class if necessary
         if cls._MESSAGE_CLASS is None:
@@ -174,6 +211,9 @@ class ProtoBufAble(ABC):
 
         # create the constructor arguments
         kwarg_dict = {member: getattr(instance, member) for member in cls._OPTIONAL_TYPE_BY_MEMBER}
-        kwarg_dict.update((member, getattr(instance, member)) for member in cls._REPEATED_TYPE_BY_MEMBER)
+        kwarg_dict.update(
+            (member, container_type(getattr(instance, member)))
+            for member, container_type in cls._REPEATED_CONTAINER_TYPE_BY_MEMBER.items()
+        )
 
         return cls(**kwarg_dict)
