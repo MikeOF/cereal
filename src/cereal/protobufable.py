@@ -14,6 +14,7 @@ class ProtobufAble(ABC):
     _PROTOFILE_SUFFIX = '.proto'
     _OPTIONAL_TYPE_BY_TYPE = {str: 'string', bool: 'bool', int: 'int32', float: 'double'}
     _REPEATED_TYPE_SET = frozenset((list, set))
+    _CONSTRUCTOR_PARAMETER_BY_NAME: Optional[dict] = None
     _OPTIONAL_TYPE_BY_MEMBER: Optional[dict] = None
     _REPEATED_CONTAINER_TYPE_BY_MEMBER: Optional[dict] = None
     _REPEATED_ELEMENT_TYPE_BY_MEMBER: Optional[dict] = None
@@ -44,10 +45,15 @@ class ProtobufAble(ABC):
                 or cls._REPEATED_ELEMENT_TYPE_BY_MEMBER is None
         ):
 
-            type_by_member = {
-                name: parameter.annotation
+            cls._CONSTRUCTOR_PARAMETER_BY_NAME = {
+                name: parameter
                 for name, parameter in inspect.signature(cls.__init__).parameters.items()
                 if name != 'self'
+            }
+
+            type_by_member = {
+                name: parameter.annotation
+                for name, parameter in cls._CONSTRUCTOR_PARAMETER_BY_NAME.items()
             }
 
             cls._OPTIONAL_TYPE_BY_MEMBER = {
