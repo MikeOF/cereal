@@ -1,12 +1,12 @@
 import inspect
 import json
-from abc import ABC
-from functools import cached_property
+from abc import ABCMeta
 from typing import Optional
 
 
-class JSONAble(ABC):
+class JSONAble(metaclass=ABCMeta):
 
+    _SERIALIZATION_MODULE = json
     _CONSTRUCTOR_PARAMETER_SET: Optional[set[str]] = None
 
     @classmethod
@@ -26,25 +26,13 @@ class JSONAble(ABC):
     def from_json(cls, json_obj: dict):
 
         cls._ensure_constructor_parameter_set()
-
         construction_kwarg_by_name = {k: v for k, v in json_obj.items() if k in cls._CONSTRUCTOR_PARAMETER_SET}
 
-        instance = cls(**construction_kwarg_by_name)
-
-        if len(construction_kwarg_by_name) != len(json_obj):
-
-            for name, value in ((k, v) for k, v in json_obj.items() if k not in cls._CONSTRUCTOR_PARAMETER_SET):
-                setattr(instance, name, value)
-
-        return instance
+        return  cls(**construction_kwarg_by_name)
 
     def to_json_str(self, indent: int = None):
         return json.dumps(self.to_json(), indent=indent)
 
     def to_json(self):
         self._ensure_constructor_parameter_set()
-        cached_property_key_set = {k for k, v in inspect.getmembers(self.__class__) if isinstance(v, cached_property)}
-        return {
-            k: v for k, v in self.__dict__.items()
-            if k not in cached_property_key_set
-        }
+        return {k: getattr(self, k) for k in self._CONSTRUCTOR_PARAMETER_SET}

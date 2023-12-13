@@ -1,13 +1,13 @@
 import inspect
 import subprocess
-from abc import ABC
+from abc import ABCMeta
 from importlib.machinery import SourceFileLoader
 from pathlib import Path
 from types import GenericAlias
 from typing import Optional
 
 
-class ProtobufAble(ABC):
+class ProtobufAble(metaclass=ABCMeta):
     """Base class that provides protobuf serialization."""
 
     _PROTOBUF_DIRNAME = '__protobuf__'

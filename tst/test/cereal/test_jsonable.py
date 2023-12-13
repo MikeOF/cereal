@@ -20,4 +20,6 @@ def test_roundtrip():
     instance_roundtrip = Basic.from_json_str(json_str=instance.to_json_str())
 
     # check
-    assert instance.__dict__ == instance_roundtrip.__dict__
+    expected_dict = instance.__dict__.copy()
+    expected_dict['e'] = None
+    assert expected_dict == instance_roundtrip.__dict__
