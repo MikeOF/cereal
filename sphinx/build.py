@@ -61,6 +61,7 @@ def build():
         cwd=Handle.ROOT_DIR_PATH,
         check=True
     )
+    Handle.DOCS_DIR_PATH.joinpath('.nojekyll').touch()
 
 
 if __name__ == '__main__':
