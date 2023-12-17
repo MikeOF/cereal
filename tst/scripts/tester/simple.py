@@ -3,7 +3,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent.parent.parent.joinpath('src')))
 
-from cereal.protobufable import ProtoBufAble
+from piquid.protobufable import ProtoBufAble
 
 
 class Simple(ProtoBufAble):

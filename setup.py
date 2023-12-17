@@ -6,7 +6,7 @@ extra_requirement_list_by_name = {
 }
 
 setup(
-    name='cereal',
+    name='piquid',
     version='0.1.0',
     package_dir={'': 'src'},
     packages=find_packages('src'),
