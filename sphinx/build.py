@@ -14,8 +14,9 @@ class Handle:
             and len({'src', 'sphinx', 'docs'}.difference(map(lambda x: x.name, ROOT_DIR_PATH.glob('*')))) == 0
     ), f'could not recognize the root dir path, {list(map(lambda x: x.name, ROOT_DIR_PATH.glob("*")))}'
 
-    # get the api docs path
+    SRC_DIR_PATH = ROOT_DIR_PATH.joinpath('src')
     DOCS_DIR_PATH = ROOT_DIR_PATH.joinpath('docs')
+    SPHINX_DIR_PATH = ROOT_DIR_PATH.joinpath('sphinx')
 
 
 def main():
@@ -26,20 +27,19 @@ def main():
 
 def prepare():
     subprocess.run(
-        ['sphinx-apidoc', '-o', 'sphinx/reference', '-e', 'src/piquid', '-M', '-f'],
+        tuple(
+            map(
+                str,
+                (
+                    'sphinx-apidoc', '-M', '-f',
+                    '-o', Handle.SPHINX_DIR_PATH.joinpath('reference'),
+                    '-e', Handle.SRC_DIR_PATH.joinpath('piquid')
+                )
+            )
+        ),
         cwd=Handle.ROOT_DIR_PATH,
         check=True
     )
-
-
-def build():
-    tempdir = tempfile.mkdtemp()
-    subprocess.run(
-        ['sphinx-build', '-b', 'html', '-d', tempdir, 'sphinx', 'docs'],
-        cwd=Handle.ROOT_DIR_PATH,
-        check=True
-    )
-    Handle.DOCS_DIR_PATH.joinpath('.nojekyll').touch()
 
 
 def clean():
@@ -52,6 +52,15 @@ def clean():
 
         else:
             shutil.rmtree(path)
+
+
+def build():
+    tempdir = tempfile.mkdtemp()
+    subprocess.run(
+        tuple(map(str, ('sphinx-build', '-b', 'html', '-d', tempdir, Handle.SPHINX_DIR_PATH, Handle.DOCS_DIR_PATH))),
+        cwd=Handle.ROOT_DIR_PATH,
+        check=True
+    )
 
 
 if __name__ == '__main__':
