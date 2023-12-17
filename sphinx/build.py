@@ -15,7 +15,7 @@ class Handle:
     ), f'could not recognize the root dir path, {list(map(lambda x: x.name, ROOT_DIR_PATH.glob("*")))}'
 
     # get the api docs path
-    API_DOCS_DIR_PATH = ROOT_DIR_PATH.joinpath('docs/api')
+    DOCS_DIR_PATH = ROOT_DIR_PATH.joinpath('docs')
 
 
 def main():
@@ -39,12 +39,13 @@ def build():
         cwd=Handle.ROOT_DIR_PATH,
         check=True
     )
+    Handle.DOCS_DIR_PATH.joinpath('.nojekyll').touch()
 
 
 def clean():
 
     # remove everything in the docs directory
-    for path in Handle.API_DOCS_DIR_PATH.glob('*'):
+    for path in Handle.DOCS_DIR_PATH.glob('*'):
 
         if path.is_file():
             path.unlink()
