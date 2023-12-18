@@ -37,12 +37,6 @@ def expected_dict():
     return Basic.get_test_instance().__dict__
 
 
-def prepare():
-    protobuf_dir_path = Basic._get_protobuf_dir_path()
-    if protobuf_dir_path.exists():
-        shutil.rmtree(protobuf_dir_path)
-
-
 def cleanup():
     protobuf_dir_path = Basic._get_protobuf_dir_path()
     if protobuf_dir_path.exists():
@@ -50,7 +44,7 @@ def cleanup():
 
 
 def test_roundtrip_file(test_instance, expected_dict):
-    prepare()
+    cleanup()
 
     try:
 
@@ -67,7 +61,7 @@ def test_roundtrip_file(test_instance, expected_dict):
 
 
 def test_roundtrip(test_instance, expected_dict):
-    prepare()
+    cleanup()
 
     try:
 
