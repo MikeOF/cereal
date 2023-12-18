@@ -58,15 +58,18 @@
 <p>This class provides convenience methods for pickle serialization. Serialization can either be to/from bytes or
 to/from a file path.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="piquid.pickleable.PickleAble.from_pickle_bytes">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_pickle_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj_bytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#piquid.pickleable.PickleAble.from_pickle_bytes" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="piquid.pickleable.PickleAble.from_pickle">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_pickle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pickle_bytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#piquid.pickleable.PickleAble.from_pickle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deserialize and instance from bytes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>obj_bytes</strong> (<em>bytes</em>) – bytes containing a pickle serialized instance</p>
+<dd class="field-odd"><p><strong>pickle_bytes</strong> (<em>bytes</em>) – bytes containing a pickle serialized instance</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>an instance of the class</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>__class__</p>
 </dd>
 </dl>
 </dd></dl>
@@ -77,21 +80,27 @@ to/from a file path.</p>
 <dd><p>Deserialize and instance from a file path.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>file_path</strong> (<em>Path</em><em> | </em><em>str</em>) – a path to a file containing a pickled instance of the class.</p>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>Union</em><em>[</em><em>Path</em><em>, </em><em>str</em><em>]</em>) – a path to a file containing a pickled instance of the class.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>an instance of the class</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>__class__</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="piquid.pickleable.PickleAble.to_pickle_bytes">
-<span class="sig-name descname"><span class="pre">to_pickle_bytes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="headerlink" href="#piquid.pickleable.PickleAble.to_pickle_bytes" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="piquid.pickleable.PickleAble.to_pickle">
+<span class="sig-name descname"><span class="pre">to_pickle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="headerlink" href="#piquid.pickleable.PickleAble.to_pickle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Serialized this instance and get the serialized for in bytes.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bytes containing the pickle serialized form of this instance</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bytes</p>
 </dd>
 </dl>
 </dd></dl>
@@ -102,10 +111,13 @@ to/from a file path.</p>
 <dd><p>Serialized this instance and write it to a file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>file_path</strong> (<em>Path</em><em> | </em><em>str</em>) – the path to write the instance to</p>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>Union</em><em>[</em><em>Path</em><em>, </em><em>str</em><em>]</em>) – the path to write the instance to</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Nothing</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>nothing</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
 </dd>
 </dl>
 </dd></dl>

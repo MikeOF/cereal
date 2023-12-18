@@ -7,6 +7,19 @@ import bson
 
 
 class BSONAble(metaclass=ABCMeta):
+    """A base class providing BSON serialization functionality.
+
+    This class includes an interface for BSON serialization that relies on the signature of the inheriting classes
+    __init__ method. Any member included in that init method can be serialized by using the "to_json" methods of this
+    class. During deserialization, parameters of the __init__ method are extracted from a BSON object and used to
+    construct an instance.
+
+    Notes & Caveats:
+
+    * Currently only standard JSON/BSON types are supported.
+    * Any instance state that is not part of the __init__ signature will not be serialized.
+
+    """
 
     _CONSTRUCTOR_PARAMETER_SET: Optional[set[str]] = None
 

@@ -54,6 +54,16 @@
 <dt class="sig sig-object py" id="piquid.bsonable.BSONAble">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">piquid.bsonable.</span></span><span class="sig-name descname"><span class="pre">BSONAble</span></span><a class="headerlink" href="#piquid.bsonable.BSONAble" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A base class providing BSON serialization functionality.</p>
+<p>This class includes an interface for BSON serialization that relies on the signature of the inheriting classes
+__init__ method. Any member included in that init method can be serialized by using the “to_json” methods of this
+class. During deserialization, parameters of the __init__ method are extracted from a BSON object and used to
+construct an instance.</p>
+<p>Notes &amp; Caveats:</p>
+<ul class="simple">
+<li><p>Currently only standard JSON/BSON types are supported.</p></li>
+<li><p>Any instance state that is not part of the __init__ signature will not be serialized.</p></li>
+</ul>
 <dl class="py method">
 <dt class="sig sig-object py" id="piquid.bsonable.BSONAble.from_bson">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_bson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bson_bytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#piquid.bsonable.BSONAble.from_bson" title="Permalink to this definition">¶</a></dt>

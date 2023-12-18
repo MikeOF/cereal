@@ -22,9 +22,9 @@ def test_roundtrip():
     # roundtrip the instance
     temp_file_path = Path(tempfile.mkdtemp()).joinpath('file.bson')
     instance.to_bson_file(file_path=temp_file_path)
-    instance_roundtrip = Basic.from_bson_file(file_path=temp_file_path)
+    roundtrip_instance = Basic.from_bson_file(file_path=temp_file_path)
 
     # check
     expected_dict = instance.__dict__.copy()
     expected_dict['e'] = None
-    assert expected_dict == instance_roundtrip.__dict__
+    assert expected_dict == roundtrip_instance.__dict__

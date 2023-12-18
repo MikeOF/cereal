@@ -6,6 +6,19 @@ from typing import Optional, Union
 
 
 class JSONAble(metaclass=ABCMeta):
+    """A base class providing JSON serialization functionality.
+
+    This class includes an interface for JSON serialization that relies on the signature of the inheriting classes
+    __init__ method. Any member included in that init method can be serialized by using the "to_json" methods of this
+    class. During deserialization, parameters of the __init__ method are extracted from a JSON object and used to
+    construct an instance.
+
+    Notes & Caveats:
+
+    * Currently only standard JSON types are supported.
+    * Any instance state that is not part of the __init__ signature will not be serialized.
+
+    """
 
     _CONSTRUCTOR_PARAMETER_SET: Optional[set[str]] = None
 

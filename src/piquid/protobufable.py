@@ -161,36 +161,22 @@ class ProtobufAble(metaclass=ABCMeta):
             # get the source class
             cls._MESSAGE_CLASS = getattr(message_module, cls.__name__)
 
-    def to_protobuf(self) -> bytes:
-        """Serialize the instance to protobuf bytes.
+    @classmethod
+    def from_protobuf_file(cls, file_path: Path):
+        """Create an instance from  a file path.
+
+        Parameters
+        ----------
+        file_path : Path | str
+            the file path to read the instance from
 
         Returns
         -------
-        bytes
-            protobuf serialized bytes of the instance.
-
+        __class__
+            an instance of the class
         """
-
-        # import the message class if necessary
-        if self._MESSAGE_CLASS is None:
-            self._import_message_class()
-
-        # set the type by member dicts if they are None
-        self._ensure_type_by_member_dicts()
-
-        # create an instance of the message class
-        instance = self._MESSAGE_CLASS()
-
-        # add each optional member
-        for member in self._OPTIONAL_TYPE_BY_MEMBER:
-            setattr(instance, member, getattr(self, member))
-
-        # add each repeated member
-        for member in self._REPEATED_ELEMENT_TYPE_BY_MEMBER:
-            getattr(instance, member).extend(getattr(self, member))
-
-        # serialize and return
-        return instance.SerializeToString()
+        with file_path.open(mode='rb') as inf:
+            return cls.from_protobuf(protobuf=inf.read())
 
     @classmethod
     def from_protobuf(cls, protobuf: bytes):
@@ -223,3 +209,49 @@ class ProtobufAble(metaclass=ABCMeta):
         )
 
         return cls(**kwarg_dict)
+
+    def to_protobuf_file(self, file_path: Path) -> None:
+        """Serialize the instance and write to a file path.
+
+        Parameters
+        ----------
+        file_path : Union[Path, str]
+            the file path to write to
+
+        Returns
+        -------
+        None
+            nothing
+        """
+        with file_path.open(mode='wb') as outf:
+            outf.write(self.to_protobuf())
+
+    def to_protobuf(self) -> bytes:
+        """Serialize the instance to protobuf bytes.
+
+        Returns
+        -------
+        bytes
+            protobuf serialized bytes of the instance.
+        """
+
+        # import the message class if necessary
+        if self._MESSAGE_CLASS is None:
+            self._import_message_class()
+
+        # set the type by member dicts if they are None
+        self._ensure_type_by_member_dicts()
+
+        # create an instance of the message class
+        instance = self._MESSAGE_CLASS()
+
+        # add each optional member
+        for member in self._OPTIONAL_TYPE_BY_MEMBER:
+            setattr(instance, member, getattr(self, member))
+
+        # add each repeated member
+        for member in self._REPEATED_ELEMENT_TYPE_BY_MEMBER:
+            getattr(instance, member).extend(getattr(self, member))
+
+        # serialize and return
+        return instance.SerializeToString()

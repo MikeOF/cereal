@@ -41,8 +41,8 @@ def test_roundtrip_file(test_instance):
 def test_roundtrip_bytes(test_instance):
 
     # roundtrip the instance
-    obj_bytes = test_instance.to_pickle_bytes()
-    instance_roundtrip = Basic.from_pickle_bytes(obj_bytes=obj_bytes)
+    obj_bytes = test_instance.to_pickle()
+    instance_roundtrip = Basic.from_pickle(pickle_bytes=obj_bytes)
 
     # check
     assert test_instance.__dict__ == instance_roundtrip.__dict__
