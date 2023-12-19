@@ -1,4 +1,5 @@
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
 
 import pytest
@@ -52,3 +53,19 @@ def test_roundtrip(test_instance, expected_dict):
     roundtrip_instance = Basic.from_json_obj(json_obj=test_instance.to_json_obj())
 
     assert roundtrip_instance.__dict__ == expected_dict
+
+
+def test_roundtrip_dataclass():
+
+    @dataclass(frozen=True)
+    class BasicDataclass(JSONAble):
+        a: str
+        b: float
+        c: list[int]
+        d: bool
+
+    test_instance = BasicDataclass(a='hello', b=5.5, c=[4,5,6], d=False)
+
+    roundtrip_instance = BasicDataclass.from_json(json_str=test_instance.to_json())
+
+    assert roundtrip_instance == test_instance

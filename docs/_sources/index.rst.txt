@@ -6,6 +6,14 @@
 Welcome to piquid's documentation!
 ==================================
 
+Piquid is a simple library that provides serialization functionality via a collection of base classes. It
+supports JSON, BSON, Protobuf, and Pickle serialization. Each base class supports serialization to either objects in
+memory or to a file path, and each is meant to be compatible with dataclasses.
+
+The implementations of the classes in this library are quite simple and therefore limited. The intention is not to
+present a library that can satisfy any use case. It is instead to present a pattern that can be used and improved upon
+for simple "afterthought" style serialziation in Python.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:

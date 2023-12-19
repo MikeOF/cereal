@@ -1,4 +1,5 @@
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
 
 import pytest
@@ -38,7 +39,7 @@ def test_roundtrip_file(test_instance):
     assert test_instance.__dict__ == instance_roundtrip.__dict__
 
 
-def test_roundtrip_bytes(test_instance):
+def test_roundtrip(test_instance):
 
     # roundtrip the instance
     obj_bytes = test_instance.to_pickle()
@@ -47,3 +48,27 @@ def test_roundtrip_bytes(test_instance):
     # check
     assert test_instance.__dict__ == instance_roundtrip.__dict__
 
+
+@dataclass(frozen=True)
+class BasicDataclass(PickleAble):
+    a: int
+    b: list[str]
+    c: dict[str, list[float]]
+
+    def test_method(self):
+        return ' '.join(map(str, (self.a, self.c, self.b, self.e)))
+
+
+@pytest.fixture()
+def test_dataclass_instance() -> BasicDataclass:
+    return BasicDataclass(a=9, b=['Hey', 'here', 'we', 'are'], c={'a': [1.1, 2.2]})
+
+
+def test_roundtrip_dataclass(test_dataclass_instance):
+
+    # roundtrip the instance
+    obj_bytes = test_dataclass_instance.to_pickle()
+    instance_roundtrip = BasicDataclass.from_pickle(pickle_bytes=obj_bytes)
+
+    # check
+    assert instance_roundtrip == test_dataclass_instance

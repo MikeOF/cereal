@@ -1,5 +1,6 @@
 import shutil
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
 
 import pytest
@@ -26,6 +27,12 @@ class Basic(ProtobufAble):
             e={5, 6, 7}
         )
 
+    @classmethod
+    def cleanup(cls):
+        protobuf_dir_path = cls._get_protobuf_dir_path()
+        if protobuf_dir_path.exists():
+            shutil.rmtree(protobuf_dir_path)
+
 
 @pytest.fixture()
 def test_instance() -> Basic:
@@ -37,14 +44,8 @@ def expected_dict():
     return Basic.get_test_instance().__dict__
 
 
-def cleanup():
-    protobuf_dir_path = Basic._get_protobuf_dir_path()
-    if protobuf_dir_path.exists():
-        shutil.rmtree(protobuf_dir_path)
-
-
 def test_roundtrip_file(test_instance, expected_dict):
-    cleanup()
+    Basic.cleanup()
 
     try:
 
@@ -57,11 +58,11 @@ def test_roundtrip_file(test_instance, expected_dict):
         assert roundtrip_instance.__dict__ == expected_dict
 
     finally:
-        cleanup()
+        Basic.cleanup()
 
 
 def test_roundtrip(test_instance, expected_dict):
-    cleanup()
+    Basic.cleanup()
 
     try:
 
@@ -72,4 +73,49 @@ def test_roundtrip(test_instance, expected_dict):
         assert roundtrip_instance.__dict__ == expected_dict
 
     finally:
-        cleanup()
+        Basic.cleanup()
+
+
+@dataclass(frozen=True)
+class BasicDataclass(ProtobufAble):
+    a: str
+    b: float
+    c: int
+    d: list[str]
+    e: set[int]
+
+    @classmethod
+    def get_test_instance(cls):
+        return cls(
+            a='hello',
+            b=5.5,
+            c=-6,
+            d=['you', 'are', 'a', 'test'],
+            e={5, 6, 7}
+        )
+
+    @classmethod
+    def cleanup(cls):
+        protobuf_dir_path = cls._get_protobuf_dir_path()
+        if protobuf_dir_path.exists():
+            shutil.rmtree(protobuf_dir_path)
+
+
+@pytest.fixture
+def test_dataclass_instance():
+    return BasicDataclass.get_test_instance()
+
+
+def test_roundtrip_dataclass(test_dataclass_instance):
+    BasicDataclass.cleanup()
+
+    try:
+
+        # round trip through the serialization process
+        roundtrip_instance = BasicDataclass.from_protobuf(protobuf=test_dataclass_instance.to_protobuf())
+
+        # check for equality
+        assert roundtrip_instance == test_dataclass_instance
+
+    finally:
+        BasicDataclass.cleanup()

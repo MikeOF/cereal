@@ -1,3 +1,5 @@
+"""JSON serialization"""
+
 import inspect
 import json
 from abc import ABCMeta
@@ -5,16 +7,14 @@ from pathlib import Path
 from typing import Optional, Union
 
 
-"""JSON serialization"""
-
-
 class JSONAble(metaclass=ABCMeta):
     """A base class providing JSON serialization functionality.
 
     This class includes an interface for JSON serialization that relies on the signature of the inheriting classes
-    __init__ method. Any member included in that init method can be serialized by using the "to_json" methods of this
-    class. During deserialization, parameters of the __init__ method are extracted from a JSON object and used to
-    construct an instance.
+    __init__ method. During serialization the parameters of the __init__ method are collected from the class to be
+    serialized, and during deserialization the parameters of the __init__ method are used to create keyword arguments
+    to the __init__ method. The means that any class members which need to be included in serialzied instances of the
+    class must be included as paramters to the __init__ signature.
 
     Notes & Caveats:
 
@@ -37,35 +37,36 @@ class JSONAble(metaclass=ABCMeta):
 
     @classmethod
     def from_json_file(cls, file_path: Union[Path, str]):
-        """Create an instance from a file path.
+        """Deserialize an instance from a file path.
 
         Parameters
         ----------
         file_path : Path | str
-            the file path to read the instance from
+            the file path to deserialize the instance from
 
         Returns
         -------
         __class__
-            an instance of the class
+            the instance of the class
         """
         with Path(file_path).open(mode='r') as inf:
             return cls.from_json(json_str=inf.read())
 
     @classmethod
     def from_json(cls, json_str: str):
-        """Create an instance from a string of JSON.
+        """Deserialize an instance from a JSON string.
 
         Parameters
         ----------
         json_str : str
-            the string to generate the instance from
+            the JSON string to deserialize the instance from
 
         Returns
         -------
         __class__
-            an instance of the class
+            the instance of the class
         """
+
         return cls.from_json_obj(json_obj=json.loads(json_str))
 
     @classmethod
@@ -103,6 +104,7 @@ class JSONAble(metaclass=ABCMeta):
         None
             nothing
         """
+
         with Path(file_path).open(mode='w') as outf:
             outf.write(self.to_json(indent=indent))
 
@@ -119,6 +121,7 @@ class JSONAble(metaclass=ABCMeta):
         str
             JSON serialized string of the instance
         """
+
         return json.dumps(self.to_json_obj(), indent=indent)
 
     def to_json_obj(self) -> dict:
@@ -129,5 +132,6 @@ class JSONAble(metaclass=ABCMeta):
         dict
             JSON serialized object of the instance
         """
+
         self._ensure_constructor_parameter_set()
         return {k: getattr(self, k) for k in self._CONSTRUCTOR_PARAMETER_SET}

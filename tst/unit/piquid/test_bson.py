@@ -1,4 +1,5 @@
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
 
 import pytest
@@ -49,3 +50,28 @@ def test_roundtrip(test_instance, expected_dict):
 
     # check
     assert expected_dict == roundtrip_instance.__dict__
+
+
+@dataclass(frozen=True)
+class BasicDataclass(BSONAble):
+    a: int
+    b: list[str]
+    c: dict[str, list[float]]
+
+    @classmethod
+    def get_test_instance(cls):
+        return cls(a=1, b=['hello', 'there'], c={'I': [5.5, 6.6, 7.7], 'am': [1.1, 2.2, 3.3], 'a': [4.4, 5.5]})
+
+
+@pytest.fixture()
+def test_dataclass_instance() -> BasicDataclass:
+    return BasicDataclass.get_test_instance()
+
+
+def test_roundtrip_dataclass(test_dataclass_instance):
+
+    # roundtrip the instance
+    roundtrip_instance = BasicDataclass.from_bson(bson_bytes=test_dataclass_instance.to_bson())
+
+    # check
+    assert roundtrip_instance == test_dataclass_instance
