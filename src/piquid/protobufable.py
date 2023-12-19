@@ -1,3 +1,4 @@
+"""Protobuf serialization"""
 import inspect
 import subprocess
 from abc import ABCMeta
@@ -5,9 +6,6 @@ from importlib.machinery import SourceFileLoader
 from pathlib import Path
 from types import GenericAlias
 from typing import Optional
-
-
-"""Protobuf serialization"""
 
 
 class ProtobufAble(metaclass=ABCMeta):
