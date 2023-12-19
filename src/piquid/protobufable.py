@@ -7,8 +7,16 @@ from types import GenericAlias
 from typing import Optional
 
 
+"""Protobuf serialization"""
+
+
 class ProtobufAble(metaclass=ABCMeta):
-    """Base class that provides protobuf serialization."""
+    """Base class that provides protobuf serialization.
+
+    This class provides its subclasses with protobuf serialization functionality. This includes writing a proto file,
+    compiling the protofile, importing the message classes, and coverting between binary protobuf and instances of the
+    class.
+    """
 
     _PROTOBUF_DIRNAME = '__protobuf__'
     _PROTOFILE_SUFFIX = '.proto'

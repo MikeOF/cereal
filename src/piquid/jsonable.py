@@ -5,6 +5,9 @@ from pathlib import Path
 from typing import Optional, Union
 
 
+"""JSON serialization"""
+
+
 class JSONAble(metaclass=ABCMeta):
     """A base class providing JSON serialization functionality.
 
@@ -47,10 +50,10 @@ class JSONAble(metaclass=ABCMeta):
             an instance of the class
         """
         with Path(file_path).open(mode='r') as inf:
-            return cls.from_json_str(json_str=inf.read())
+            return cls.from_json(json_str=inf.read())
 
     @classmethod
-    def from_json_str(cls, json_str: str):
+    def from_json(cls, json_str: str):
         """Create an instance from a string of JSON.
 
         Parameters
@@ -63,15 +66,15 @@ class JSONAble(metaclass=ABCMeta):
         __class__
             an instance of the class
         """
-        return cls.from_json(json_obj=json.loads(json_str))
+        return cls.from_json_obj(json_obj=json.loads(json_str))
 
     @classmethod
-    def from_json(cls, json_obj: dict):
+    def from_json_obj(cls, json_obj: dict):
         """Create an instance from a JSON object.
 
         Parameters
         ----------
-        json_obj : object
+        json_obj : dict
             the object to generate the instance from
 
         Returns
@@ -101,9 +104,9 @@ class JSONAble(metaclass=ABCMeta):
             nothing
         """
         with Path(file_path).open(mode='w') as outf:
-            outf.write(self.to_json_str(indent=indent))
+            outf.write(self.to_json(indent=indent))
 
-    def to_json_str(self, indent: int = None) -> str:
+    def to_json(self, indent: int = None) -> str:
         """Serialize the instance to a JSON string.
 
         Parameters
@@ -116,9 +119,9 @@ class JSONAble(metaclass=ABCMeta):
         str
             JSON serialized string of the instance
         """
-        return json.dumps(self.to_json(), indent=indent)
+        return json.dumps(self.to_json_obj(), indent=indent)
 
-    def to_json(self) -> dict:
+    def to_json_obj(self) -> dict:
         """Serialize the instance to a JSON object.
 
         Returns

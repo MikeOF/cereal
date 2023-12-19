@@ -1,6 +1,7 @@
 import shutil
 import subprocess
 import tempfile
+from argparse import ArgumentParser
 from pathlib import Path
 
 
@@ -65,4 +66,6 @@ def build():
 
 
 if __name__ == '__main__':
+    parser = ArgumentParser(description='Build docs and place in docs via Sphinx & autodoc.')
+    parser.parse_args()
     main()

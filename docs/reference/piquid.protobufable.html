@@ -51,6 +51,9 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">piquid.protobufable.</span></span><span class="sig-name descname"><span class="pre">ProtobufAble</span></span><a class="headerlink" href="#piquid.protobufable.ProtobufAble" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base class that provides protobuf serialization.</p>
+<p>This class provides its subclasses with protobuf serialization functionality. This includes writing a proto file,
+compiling the protofile, importing the message classes, and coverting between binary protobuf and instances of the
+class.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="piquid.protobufable.ProtobufAble.from_protobuf">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_protobuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">protobuf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#piquid.protobufable.ProtobufAble.from_protobuf" title="Permalink to this definition">¶</a></dt>

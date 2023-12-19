@@ -42,13 +42,13 @@ def test_roundtrip_file(test_instance, expected_dict):
 
 def test_roundtrip_str(test_instance, expected_dict):
 
-    roundtrip_instance = Basic.from_json_str(json_str=test_instance.to_json_str())
+    roundtrip_instance = Basic.from_json(json_str=test_instance.to_json())
 
     assert roundtrip_instance.__dict__ == expected_dict
 
 
 def test_roundtrip(test_instance, expected_dict):
 
-    roundtrip_instance = Basic.from_json(json_obj=test_instance.to_json())
+    roundtrip_instance = Basic.from_json_obj(json_obj=test_instance.to_json_obj())
 
     assert roundtrip_instance.__dict__ == expected_dict
