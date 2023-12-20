@@ -31,6 +31,10 @@ The usage pattern for each base class is similar. For example, here is how the J
 
    example_roundtrip = Example.from_json(json_str)
 
+`github repo`_
+
+.. _github repo: https://github.com/MikeOF/piquid
+
 Read through the reference below for more details.
 
 .. toctree::
