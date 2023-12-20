@@ -11,9 +11,27 @@ from typing import Optional
 class ProtobufAble(metaclass=ABCMeta):
     """Base class that provides protobuf serialization.
 
-    This class provides its subclasses with protobuf serialization functionality. This includes writing a proto file,
-    compiling the protofile, importing the message classes, and coverting between binary protobuf and instances of the
-    class.
+    This class provides its subclasses with protobuf serialization functionality. This includes writing a proto files,
+    compiling protofiles, importing message classes, and serializing instances to binary protobuf.
+
+    The class translates some standard python types to protobuf types though there isn't much flexibility to how this is
+    done. Generally this class is quite limited in terms of its flexibility. In simple use cases it can enable protobuf
+    serializtion, however for more complex cases extending the class or writing more bespoke infrstructure is warranted.
+
+    The class works by inspecting the signature of the init method to capture members that are to be serialized. It will
+    assign basic types to Python primitives, and it can assign container types such as dicts and lists to protobuf
+    repeated types. Container types can be handled if they are expected to contain uniform collections of the same type.
+    Nested containers and containers with multiple or types are not supported.
+
+    The class works by lazily completing a series of step. When one of the serialization methods is called the class
+    will make sure the message class is imported. If this hasn't happend the class will ensure the message module
+    exists before importing it. While ensuring the method module exists the class will write and compile a protofile if
+    necessary.
+
+    Note:
+        * subclasses will write protofiles and modules to directories named "__protobuf__" where subclasses are defined
+        * only members referenced in the __init__ signature will be serialized
+        * each parameter in the __init__ signature must have type hints
     """
 
     _PROTOBUF_DIRNAME = '__protobuf__'

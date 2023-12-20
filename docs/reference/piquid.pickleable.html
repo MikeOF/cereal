@@ -44,7 +44,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">piquid</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="piquid.html">piquid package</a><ul class="current">
@@ -95,7 +95,11 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base class providing pickle serialization convenience methods.</p>
 <p>This class provides convenience methods for pickle serialization. Serialization can either be to/from bytes or
-to/from a file path.</p>
+to/from a file path. It might seem odd to have a class like this since two lines of code is often enough to pickle a
+Python object. The motivation is to provide consitency rather that to encapsulate complexity. The consitency is
+gained through having a few methods calls which can only be written one way rather than allowing for creativity to
+occur during some pickling process. Creativity is bad. Another perhaps more convincing justification for this class
+is that is can prevent a lot of instances of “import pickle”.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="piquid.pickleable.PickleAble.from_pickle">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_pickle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pickle_bytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#piquid.pickleable.PickleAble.from_pickle" title="Permalink to this definition"></a></dt>

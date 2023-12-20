@@ -20,7 +20,6 @@ class JSONAble(metaclass=ABCMeta):
 
     * Currently only standard JSON types are supported.
     * Any instance state that is not part of the __init__ signature will not be serialized.
-
     """
 
     _CONSTRUCTOR_PARAMETER_SET: Optional[set[str]] = None

@@ -9,7 +9,11 @@ class PickleAble(metaclass=ABCMeta):
     """Base class providing pickle serialization convenience methods.
 
     This class provides convenience methods for pickle serialization. Serialization can either be to/from bytes or
-    to/from a file path.
+    to/from a file path. It might seem odd to have a class like this since two lines of code is often enough to pickle a
+    Python object. The motivation is to provide consitency rather that to encapsulate complexity. The consitency is
+    gained through having a few methods calls which can only be written one way rather than allowing for creativity to
+    occur during some pickling process. Creativity is bad. Another perhaps more convincing justification for this class
+    is that is can prevent a lot of instances of "import pickle".
     """
 
     @classmethod

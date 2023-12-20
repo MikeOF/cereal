@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to piquid’s documentation! &mdash; piquid 0.0.1 documentation</title>
+  <title>Welcome to piquid’s documentation &mdash; piquid 0.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css" />
 
@@ -43,7 +43,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="reference/modules.html">piquid</a></li>
 </ul>
@@ -62,7 +62,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Welcome to piquid’s documentation!</li>
+      <li class="breadcrumb-item active">Welcome to piquid’s documentation</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -73,15 +73,31 @@
            <div itemprop="articleBody">
              
   <section id="welcome-to-piquid-s-documentation">
-<h1>Welcome to piquid’s documentation!<a class="headerlink" href="#welcome-to-piquid-s-documentation" title="Permalink to this heading"></a></h1>
+<h1>Welcome to piquid’s documentation<a class="headerlink" href="#welcome-to-piquid-s-documentation" title="Permalink to this heading"></a></h1>
 <p>Piquid is a simple library that provides serialization functionality via a collection of base classes. It
-supports JSON, BSON, Protobuf, and Pickle serialization. Each base class supports serialization to either objects in
-memory or to a file path, and each is meant to be compatible with dataclasses.</p>
-<p>The implementations of the classes in this library are quite simple and therefore limited. The intention is not to
-present a library that can satisfy any use case. It is instead to present a pattern that can be used and improved upon
-for simple “afterthought” style serialziation in Python.</p>
+supports JSON, BSON, Protobuf, and Pickle serialization. Each base class supports translations between objects in
+memory or file paths, and each is meant to be compatible with dataclasses.</p>
+<p>The implementations of these base classes are quite simple and somewhat limited. The library does not present a
+suite of tools that can satisfy any use case. It instead presents a pattern that can be used and improved upon
+for simple low-effort serialziation in Python. It would be reasonable to copy code from the source or overwrite
+the inherited methods on a subclass. However, it might be unreasonable to expect perfection or even excellence.</p>
+<p>The usage pattern for each base class is similar. For example, here is how the JSONAble base class is used:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Example</span><span class="p">(</span><span class="n">JSONAble</span><span class="p">):</span>
+
+   <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">b</span>
+
+<span class="n">example</span> <span class="o">=</span> <span class="n">Example</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
+
+<span class="n">json_str</span> <span class="o">=</span> <span class="n">example</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
+
+<span class="n">example_roundtrip</span> <span class="o">=</span> <span class="n">Example</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json_str</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Read through the reference below for more details.</p>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="reference/modules.html">piquid</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="reference/piquid.html">piquid package</a></li>
